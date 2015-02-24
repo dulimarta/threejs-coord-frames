@@ -1,8 +1,8 @@
-var MyCube = function() {
+var Cube = function() {
 
 }
 
-MyCube.prototype.build = function() {
+Cube.prototype.build = function() {
     var geometry	= new THREE.BufferGeometry();
     var vertexPos = [
         +0.8, +.8, +1,
