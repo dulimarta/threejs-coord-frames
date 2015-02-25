@@ -43,9 +43,22 @@ require([], function(){
 	//		add an object and make it move					//
 	//////////////////////////////////////////////////////////////////////////////////	
 	var material	= new THREE.MeshPhongMaterial({vertexColors:THREE.VertexColors});
-    var cube = new Cube().build();
-	var mesh	= new THREE.Mesh( cube, material );
-	scene.add( mesh );
+    var loader = new THREE.BufferGeometryLoader();
+    loader.load("shapes/cube.json",
+            function (geo) {
+                var mesh = new THREE.Mesh (geo, material);
+                scene.add (mesh);
+            },
+            function (xhr) {
+                console.log (xhr.loaded + " bytes read");
+            },
+            function (xhr) {
+                console.log ("Error ", xhr);
+            }
+    );
+    //var cube = new Cube().build();
+	//var mesh	= new THREE.Mesh( cube, material );
+	//scene.add( mesh );
     scene.add (new THREE.AxisHelper(2));
 	
 //	onRenderFcts.push(function(delta, now){
