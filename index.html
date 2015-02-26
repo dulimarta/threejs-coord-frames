@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<script src='bower_components/threejs/build/three.min.js'></script>
+<script src='bower_components/threejs/build/three.js'></script>
 <script src="vendor/require.js/require.js"></script>
 <script src="vendor/three.js/examples/js/Detector.js"></script>
 <script src="vendor/threex.windowresize.js"></script>
@@ -60,7 +60,8 @@ require([], function(){
 	var mesh	= new THREE.Mesh( c, material );
 	scene.add( mesh );
     scene.add (new THREE.AxisHelper(2));
-	
+    mesh.matrixAutoUpdate = false;
+
 //	onRenderFcts.push(function(delta, now){
 //		mesh.rotateX(0.5 * delta);
 //		mesh.rotateY(2.0 * delta);
@@ -79,11 +80,67 @@ require([], function(){
     window.addEventListener('keydown', function(event) {
         var charCode = event.which || event.keyCode;
         var charStr = String.fromCharCode(charCode);
-        console.log("Key is pressed ", charStr);
-        switch (charStr) {
-            case 'X':
-                mesh.rotateX (THREE.Math.degToRad(2.0));
-                break;
+        console.log("Key is pressed ", event);
+        if (event.ctrlKey) {
+            var amt = event.shiftKey ? -2 : 2;
+            if (event.altKey) {
+
+            }
+            else {
+                switch (charStr) {
+                    case 'X':
+                        mesh.rotateX(THREE.Math.degToRad(amt));
+                        break;
+                    case 'Y':
+                        mesh.rotateY(THREE.Math.degToRad(amt));
+                        break;
+                    case 'Z':
+                        mesh.rotateZ(THREE.Math.degToRad(amt));
+                        break;
+                }
+                mesh.updateMatrix();
+            }
+        }
+        else {
+            var amt = event.shiftKey ? -0.02 : 0.02;
+            var trans = new THREE.Matrix4;
+
+            if (event.altKey) {
+                console.log ("Before translate w.r.t world", mesh.matrixWorld.elements);
+                mesh.matrixAutoUpdate = false;
+                switch (charStr) {
+                    case 'X':
+                        trans.makeTranslation(amt, 0, 0);
+                        mesh.matrixWorld.copy(mesh.matrixWorld.multiply (trans));
+                        break;
+                    case 'Y':
+                        trans.makeTranslation(0, amt, 0);
+                        mesh.matrixWorld.copy(mesh.matrixWorld.multiply (trans));
+                        break;
+                    case 'Z':
+                        trans.makeTranslation(0, 0, amt);
+                        mesh.matrixWorld.copy(mesh.matrixWorld.multiply (trans));
+                        break;
+                }
+                console.log ("After translate w.r.t world", mesh.matrixWorld.elements);
+                mesh.matrixWorldNeedsUpdate = true;
+                mesh.updateMatrixWorld();
+                mesh.updateMatrix();
+            }
+            else {
+                switch (charStr) {
+                    case 'X':
+                        mesh.translateX(amt);
+                        break;
+                    case 'Y':
+                        mesh.translateY(amt);
+                        break;
+                    case 'Z':
+                        mesh.translateZ(amt);
+                        break;
+                }
+                mesh.updateMatrix();
+            }
         }
 
         switch (event.keyCode) {
