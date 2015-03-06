@@ -57,6 +57,7 @@ require([], function(){
 //            }
 //    );
     var c = new Cone().build(30, {r : 0.674, g : 0.7, b : 0.33});
+    var cone_cf = new THREE.Matrix4();
 	var mesh	= new THREE.Mesh( c, material );
 	scene.add( mesh );
     scene.add (new THREE.AxisHelper(2));
@@ -81,67 +82,70 @@ require([], function(){
         var charCode = event.which || event.keyCode;
         var charStr = String.fromCharCode(charCode);
         console.log("Key is pressed ", event);
+        console.log ("Before  w.r.t world", mesh.matrixWorld.elements);
         if (event.ctrlKey) {
             var amt = event.shiftKey ? -2 : 2;
             if (event.altKey) {
 
             }
             else {
+                var rot = new THREE.Matrix4();
                 switch (charStr) {
                     case 'X':
-                        mesh.rotateX(THREE.Math.degToRad(amt));
+                        cone_cf.multiply(rot.makeRotationX(THREE.Math.degToRad(amt)));
                         break;
                     case 'Y':
-                        mesh.rotateY(THREE.Math.degToRad(amt));
+                        cone_cf.multiply(rot.makeRotationY(THREE.Math.degToRad(amt)));
                         break;
                     case 'Z':
-                        mesh.rotateZ(THREE.Math.degToRad(amt));
+                        cone_cf.multiply(rot.makeRotationZ(THREE.Math.degToRad(amt)));
                         break;
                 }
-                mesh.updateMatrix();
+                mesh.matrix.copy(cone_cf);
+//                mesh.updateMatrixWorld(true);
+//                mesh.updateMatrix();
             }
         }
         else {
             var amt = event.shiftKey ? -0.02 : 0.02;
-            var trans = new THREE.Matrix4;
+            var trans = new THREE.Matrix4();
 
             if (event.altKey) {
-                console.log ("Before translate w.r.t world", mesh.matrixWorld.elements);
-                mesh.matrixAutoUpdate = false;
+//                console.log ("Parent is ", mesh.parent);
+
                 switch (charStr) {
                     case 'X':
-                        trans.makeTranslation(amt, 0, 0);
-                        mesh.matrixWorld.copy(mesh.matrixWorld.multiply (trans));
+                        cone_cf.multiplyMatrices(trans.makeTranslation(amt, 0, 0), cone_cf);
                         break;
                     case 'Y':
-                        trans.makeTranslation(0, amt, 0);
-                        mesh.matrixWorld.copy(mesh.matrixWorld.multiply (trans));
+                        cone_cf.multiplyMatrices(trans.makeTranslation(0, amt, 0), cone_cf);
                         break;
                     case 'Z':
-                        trans.makeTranslation(0, 0, amt);
-                        mesh.matrixWorld.copy(mesh.matrixWorld.multiply (trans));
+                        cone_cf.multiplyMatrices(trans.makeTranslation(0, 0, amt), cone_cf);
                         break;
                 }
-                console.log ("After translate w.r.t world", mesh.matrixWorld.elements);
-                mesh.matrixWorldNeedsUpdate = true;
-                mesh.updateMatrixWorld();
-                mesh.updateMatrix();
+                mesh.matrix.copy(cone_cf);
+//                mesh.updateMatrixWorld(true);
+//                mesh.updateMatrix();
             }
             else {
                 switch (charStr) {
                     case 'X':
-                        mesh.translateX(amt);
+                        cone_cf.multiply(trans.makeTranslation(amt, 0, 0));
                         break;
                     case 'Y':
-                        mesh.translateY(amt);
+                        cone_cf.multiply(trans.makeTranslation(0, amt, 0));
                         break;
                     case 'Z':
-                        mesh.translateZ(amt);
+                        cone_cf.multiply(trans.makeTranslation(0, 0, amt));
                         break;
                 }
-                mesh.updateMatrix();
+                mesh.matrix.copy(cone_cf);
+//                mesh.updateMatrix();
+//                mesh.updateMatrixWorld(true);
             }
         }
+        console.log ("After translate w.r.t world", mesh.matrixWorld.elements);
 
         switch (event.keyCode) {
             case 37: /* left arrow */
@@ -158,7 +162,7 @@ require([], function(){
 		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3);
 		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3);
 		camera.lookAt( scene.position )
-	})
+	});
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the scene						//
