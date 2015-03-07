@@ -9,7 +9,9 @@ SwingArm = function(len) {
     var armR = armL.clone();
 
     var armGroup = new THREE.Group();
+    armL.translateY (-len/2);
     armL.translateZ (-0.5);
+    armR.translateY (-len/2);
     armR.translateZ (+0.5);
     armGroup.add(armL);
     armGroup.add(armR);

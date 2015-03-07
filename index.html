@@ -67,20 +67,20 @@ require([], function(){
 //    );
     var c = new Cone().build(30, {r : 0.674, g : 0.7, b : 0.33});
     var wheel_cf = new THREE.Matrix4();
-    wheel_cf = wheel_cf.makeTranslation(0, -10, 0);
+    wheel_cf.makeTranslation(0, -20, 0);
     var arm_cf = new THREE.Matrix4();
+    arm_cf.makeRotationZ(THREE.Math.degToRad(40));
 	var mesh	= new THREE.Mesh( c, material );
     var wheel = new Wheel();
     var arm = new SwingArm(20);
-//    arm.translateY(-10);
-//    wheel.translateY (-10);
+    arm.add (new THREE.AxisHelper(2));
     var frame = new SwingFrame();
 //	scene.add (wheel.build());
 //    scene.add (arm.build());
     arm.add (wheel);
     frame.add(arm);
     scene.add (frame);
-    scene.add (new THREE.AxisHelper(2));
+    scene.add (new THREE.AxisHelper(4));
     var grid = new THREE.GridHelper(50, 1);
     scene.add (grid);
     camera.lookAt(new THREE.Vector3(0, 30, 0));
@@ -91,11 +91,19 @@ require([], function(){
         var quat = new THREE.Quaternion();
         var rot = new THREE.Quaternion();
         var vscale = new THREE.Vector3();
+
+        wheel_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(delta * 72)));
         wheel_cf.decompose(tran, quat, vscale);
-        rot.setFromAxisAngle( new THREE.Vector3(0,0,1), THREE.Math.degToRad(delta * 72));
         wheel.position.copy(tran);
-        wheel.quaternion.multiply(rot);
-        wheel.updateMatrix();
+        wheel.quaternion.copy(quat);
+
+        var prev_angle = 40.0 * Math.cos(now - delta);
+        var curr_angle = 40.0 * Math.cos(now);
+        arm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(curr_angle - prev_angle)));
+        arm_cf.decompose (tran, quat, vscale);
+//        rot.setFromAxisAngle( new THREE.Vector3(0,0,1), THREE.Math.degToRad(arm_angle));
+        arm.position.copy(tran);
+        arm.quaternion.copy(quat);
 	});
 	
 	//////////////////////////////////////////////////////////////////////////////////
