@@ -1,7 +1,7 @@
 /**
  * Created by dulimarh on 3/7/15.
  */
-var SwingFrame = function() {
+SwingFrame = function() {
     var FRAME_WIDTH = 16;
     var ELBOW_RAD = 2;
     var FRAME_HEIGHT = 23;
@@ -32,3 +32,7 @@ var SwingFrame = function() {
     group.translateY (FRAME_HEIGHT + ELBOW_RAD);
     return group;
 }
+
+/* Inherit from Object3D */
+SwingFrame.prototype = Object.create (THREE.Object3D.prototype);
+SwingFrame.prototype.constructor = SwingFrame;

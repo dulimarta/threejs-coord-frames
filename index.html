@@ -69,10 +69,14 @@ require([], function(){
     var cone_cf = new THREE.Matrix4();
 	var mesh	= new THREE.Mesh( c, material );
     var wheel = new Wheel();
-    var arm = new SwingArm();
+    var arm = new SwingArm(20);
+    arm.translateY(-10);
+    wheel.translateY (-10);
     var frame = new SwingFrame();
-	scene.add (wheel.build());
-    scene.add (arm.build());
+//	scene.add (wheel.build());
+//    scene.add (arm.build());
+    arm.add (wheel);
+    frame.add(arm);
     scene.add (frame);
     scene.add (new THREE.AxisHelper(2));
     var grid = new THREE.GridHelper(50, 1);
