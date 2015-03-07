@@ -4,7 +4,9 @@
 <script src="vendor/three.js/examples/js/Detector.js"></script>
 <script src="vendor/threex.windowresize.js"></script>
 <script src="shapes/cone.js"></script>
-<script src="shapes/Wheel.js"></script>
+<script src="models/Wheel.js"></script>
+<script src="models/SwingArm.js"></script>
+<script src="models/SwingFrame.js"></script>
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'><script>
 require([], function(){
 	// detect WebGL
@@ -19,13 +21,14 @@ require([], function(){
 
 	// setup a scene and camera
 	var scene	= new THREE.Scene();
+    console.log ("Scene position is ", scene.position);
 	var camera	= new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000);
 //    camera.up.set (0, 0, 1); /* use the Z axis as the upright direction */
-    camera.position.x = 3;
-    camera.position.y = 4;
-	camera.position.z = 10;
+//    camera.position.x = 3;
+    camera.position.y = 25;
+	camera.position.z = 30;
 
-    scene.add (new THREE.GridHelper(10, 1));
+//    scene.add (new THREE.GridHelper(10, 1));
 	// declare the rendering loop
 	var onRenderFcts= [];
 
@@ -66,8 +69,15 @@ require([], function(){
     var cone_cf = new THREE.Matrix4();
 	var mesh	= new THREE.Mesh( c, material );
     var wheel = new Wheel();
-	scene.add( wheel.build()  );
+    var arm = new SwingArm();
+    var frame = new SwingFrame();
+	scene.add (wheel.build());
+    scene.add (arm.build());
+    scene.add (frame);
     scene.add (new THREE.AxisHelper(2));
+    var grid = new THREE.GridHelper(50, 1);
+    scene.add (grid);
+    camera.lookAt(new THREE.Vector3(0, 30, 0));
     mesh.matrixAutoUpdate = false;
 
 //	onRenderFcts.push(function(delta, now){
@@ -78,7 +88,7 @@ require([], function(){
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
 	//////////////////////////////////////////////////////////////////////////////////
-	var mouse	= {x : 0, y : 0}
+	var mouse	= {x : 0, y : 0};
 	document.addEventListener('mousemove', function(event){
 		mouse.x	= (event.clientX / window.innerWidth ) - 0.5;
 		mouse.y	= 0.5 - (event.clientY / window.innerHeight);
@@ -166,9 +176,10 @@ require([], function(){
         }
     }, false);
 	onRenderFcts.push(function(delta, now){
-		camera.position.x += (mouse.x*5 - camera.position.x) * (delta*3);
-		camera.position.y += (mouse.y*5 - camera.position.y) * (delta*3);
-		camera.lookAt( scene.position )
+//        console.log("Mouse ", mouse, " camera ", camera.position);
+		camera.position.x += (mouse.x*30 - camera.position.x) * (delta*3);
+		camera.position.y += (mouse.y*30 - camera.position.y) * (delta*3);
+//		camera.lookAt( scene.position )
 	});
 
 	//////////////////////////////////////////////////////////////////////////////////
