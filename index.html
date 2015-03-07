@@ -52,7 +52,7 @@ require([], function(){
 	//		add an object and make it move					//
 	//////////////////////////////////////////////////////////////////////////////////	
 	var material	= new THREE.MeshPhongMaterial({vertexColors:THREE.VertexColors});
-    var loader = new THREE.BufferGeometryLoader();
+//    var loader = new THREE.BufferGeometryLoader();
 //    loader.load("shapes/cube.json",
 //            function (geo) {
 //                var mesh = new THREE.Mesh (geo, material);
@@ -66,12 +66,14 @@ require([], function(){
 //            }
 //    );
     var c = new Cone().build(30, {r : 0.674, g : 0.7, b : 0.33});
-    var cone_cf = new THREE.Matrix4();
+    var wheel_cf = new THREE.Matrix4();
+    wheel_cf = wheel_cf.makeTranslation(0, -10, 0);
+    var arm_cf = new THREE.Matrix4();
 	var mesh	= new THREE.Mesh( c, material );
     var wheel = new Wheel();
     var arm = new SwingArm(20);
-    arm.translateY(-10);
-    wheel.translateY (-10);
+//    arm.translateY(-10);
+//    wheel.translateY (-10);
     var frame = new SwingFrame();
 //	scene.add (wheel.build());
 //    scene.add (arm.build());
@@ -82,12 +84,19 @@ require([], function(){
     var grid = new THREE.GridHelper(50, 1);
     scene.add (grid);
     camera.lookAt(new THREE.Vector3(0, 30, 0));
-    mesh.matrixAutoUpdate = false;
+//    mesh.matrixAutoUpdate = false;
 
-//	onRenderFcts.push(function(delta, now){
-//		mesh.rotateX(0.5 * delta);
-//		mesh.rotateY(2.0 * delta);
-//	})
+	onRenderFcts.push(function(delta, now){
+        var tran = new THREE.Vector3();
+        var quat = new THREE.Quaternion();
+        var rot = new THREE.Quaternion();
+        var vscale = new THREE.Vector3();
+        wheel_cf.decompose(tran, quat, vscale);
+        rot.setFromAxisAngle( new THREE.Vector3(0,0,1), THREE.Math.degToRad(delta * 72));
+        wheel.position.copy(tran);
+        wheel.quaternion.multiply(rot);
+        wheel.updateMatrix();
+	});
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Camera Controls							//
