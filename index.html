@@ -4,6 +4,7 @@
 <script src="vendor/three.js/examples/js/Detector.js"></script>
 <script src="vendor/threex.windowresize.js"></script>
 <script src="shapes/cone.js"></script>
+<script src="shapes/Wheel.js"></script>
 <body style='margin: 0px; background-color: #bbbbbb; overflow: hidden;'><script>
 require([], function(){
 	// detect WebGL
@@ -15,11 +16,16 @@ require([], function(){
 	var renderer	= new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
+
 	// setup a scene and camera
 	var scene	= new THREE.Scene();
 	var camera	= new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000);
-	camera.position.z = 3;
+//    camera.up.set (0, 0, 1); /* use the Z axis as the upright direction */
+    camera.position.x = 3;
+    camera.position.y = 4;
+	camera.position.z = 10;
 
+    scene.add (new THREE.GridHelper(10, 1));
 	// declare the rendering loop
 	var onRenderFcts= [];
 
@@ -59,7 +65,8 @@ require([], function(){
     var c = new Cone().build(30, {r : 0.674, g : 0.7, b : 0.33});
     var cone_cf = new THREE.Matrix4();
 	var mesh	= new THREE.Mesh( c, material );
-	scene.add( mesh );
+    var wheel = new Wheel();
+	scene.add( wheel.build()  );
     scene.add (new THREE.AxisHelper(2));
     mesh.matrixAutoUpdate = false;
 
