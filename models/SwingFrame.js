@@ -7,7 +7,7 @@ SwingFrame = function() {
     var FRAME_HEIGHT = 23;
     var group = new THREE.Group();
     var pipeGeo = new THREE.CylinderGeometry(0.75, 0.75, FRAME_WIDTH, 20);
-    var frameMat = new THREE.MeshBasicMaterial({color:0x64591F, wireframe:true});
+    var frameMat = new THREE.MeshPhongMaterial({color:0x64591F});
     var topBar = new THREE.Mesh (pipeGeo, frameMat);
 
     var elbowGeo = new THREE.TorusGeometry(ELBOW_RAD, 0.75, 20, 12, Math.PI / 2);

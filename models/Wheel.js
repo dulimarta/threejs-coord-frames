@@ -4,11 +4,11 @@
 Wheel = function() {
     var NUM_SPOKES = 6;
     var tubeGeo = new THREE.TorusGeometry(3.5,.4, 15, 30);
-    var tubeMat = new THREE.MeshBasicMaterial({color: 0x74556A, wireframe:true});
+    var tubeMat = new THREE.MeshPhongMaterial({color: 0x000000});
     var tube = new THREE.Mesh (tubeGeo, tubeMat);
 
     var spokeGeo = new THREE.CylinderGeometry(0.3, 0.3, 3.5);
-    var spokeMat = new THREE.MeshBasicMaterial({color: 0x848484, wireframe:true});
+    var spokeMat = new THREE.MeshPhongMaterial({color: 0x848484});
     var spoke = new THREE.Mesh (spokeGeo, spokeMat);
     var wheel_group = new THREE.Group();
 

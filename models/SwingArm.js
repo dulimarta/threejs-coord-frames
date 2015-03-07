@@ -4,7 +4,7 @@
 SwingArm = function(len) {
     //var ARM_LENGTH = 20;
     var armGeo = new THREE.CylinderGeometry (0.2, 0.2, len);
-    var armMat = new THREE.MeshBasicMaterial({color:0x5463C0, wireframe:true});
+    var armMat = new THREE.MeshPhongMaterial({color:0x5463C0});
     var armL = new THREE.Mesh (armGeo, armMat);
     var armR = armL.clone();
 

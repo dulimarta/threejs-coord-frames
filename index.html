@@ -21,7 +21,6 @@ require([], function(){
 
 	// setup a scene and camera
 	var scene	= new THREE.Scene();
-    console.log ("Scene position is ", scene.position);
 	var camera	= new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000);
 //    camera.up.set (0, 0, 1); /* use the Z axis as the upright direction */
 //    camera.position.x = 3;
@@ -44,9 +43,11 @@ require([], function(){
 	var frontLight	= new THREE.DirectionalLight('white', 1)
 	frontLight.position.set(0.5, 0.5, 2)
 	scene.add( frontLight )
+    scene.add ( new THREE.PointLightHelper (frontLight, 0.5));
 	var backLight	= new THREE.DirectionalLight('white', 0.75)
 	backLight.position.set(-0.5, -0.5, -2)
-	scene.add( backLight )		
+	scene.add( backLight )
+    scene.add ( new THREE.PointLightHelper (backLight, 0.5));
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object and make it move					//
@@ -73,14 +74,12 @@ require([], function(){
 	var mesh	= new THREE.Mesh( c, material );
     var wheel = new Wheel();
     var arm = new SwingArm(20);
-    arm.add (new THREE.AxisHelper(2));
+//    arm.add (new THREE.AxisHelper(2));
     var frame = new SwingFrame();
-//	scene.add (wheel.build());
-//    scene.add (arm.build());
     arm.add (wheel);
     frame.add(arm);
     scene.add (frame);
-    scene.add (new THREE.AxisHelper(4));
+//    scene.add (new THREE.AxisHelper(4));
     var grid = new THREE.GridHelper(50, 1);
     scene.add (grid);
     camera.lookAt(new THREE.Vector3(0, 30, 0));
@@ -115,89 +114,7 @@ require([], function(){
 		mouse.y	= 0.5 - (event.clientY / window.innerHeight);
 	}, false);
 
-    /* Add a key handler to the window */
-    window.addEventListener('keydown', function(event) {
-        var charCode = event.which || event.keyCode;
-        var charStr = String.fromCharCode(charCode);
-        console.log("Key is pressed ", event);
-        console.log ("Before  w.r.t world", mesh.matrixWorld.elements);
-        if (event.ctrlKey) {
-            var amt = event.shiftKey ? -2 : 2;
-            if (event.altKey) {
-
-            }
-            else {
-                var rot = new THREE.Matrix4();
-                switch (charStr) {
-                    case 'X':
-                        cone_cf.multiply(rot.makeRotationX(THREE.Math.degToRad(amt)));
-                        break;
-                    case 'Y':
-                        cone_cf.multiply(rot.makeRotationY(THREE.Math.degToRad(amt)));
-                        break;
-                    case 'Z':
-                        cone_cf.multiply(rot.makeRotationZ(THREE.Math.degToRad(amt)));
-                        break;
-                }
-                mesh.matrix.copy(cone_cf);
-//                mesh.updateMatrixWorld(true);
-//                mesh.updateMatrix();
-            }
-        }
-        else {
-            var amt = event.shiftKey ? -0.02 : 0.02;
-            var trans = new THREE.Matrix4();
-
-            if (event.altKey) {
-//                console.log ("Parent is ", mesh.parent);
-
-                switch (charStr) {
-                    case 'X':
-                        cone_cf.multiplyMatrices(trans.makeTranslation(amt, 0, 0), cone_cf);
-                        break;
-                    case 'Y':
-                        cone_cf.multiplyMatrices(trans.makeTranslation(0, amt, 0), cone_cf);
-                        break;
-                    case 'Z':
-                        cone_cf.multiplyMatrices(trans.makeTranslation(0, 0, amt), cone_cf);
-                        break;
-                }
-                mesh.matrix.copy(cone_cf);
-//                mesh.updateMatrixWorld(true);
-//                mesh.updateMatrix();
-            }
-            else {
-                switch (charStr) {
-                    case 'X':
-                        cone_cf.multiply(trans.makeTranslation(amt, 0, 0));
-                        break;
-                    case 'Y':
-                        cone_cf.multiply(trans.makeTranslation(0, amt, 0));
-                        break;
-                    case 'Z':
-                        cone_cf.multiply(trans.makeTranslation(0, 0, amt));
-                        break;
-                }
-                mesh.matrix.copy(cone_cf);
-//                mesh.updateMatrix();
-//                mesh.updateMatrixWorld(true);
-            }
-        }
-        console.log ("After translate w.r.t world", mesh.matrixWorld.elements);
-
-        switch (event.keyCode) {
-            case 37: /* left arrow */
-                break;
-            case 38: /* up arrow */
-                break;
-            case 39: /* right arrow */
-                break;
-            case 40: /* down arrow */
-                break;
-        }
-    }, false);
 	onRenderFcts.push(function(delta, now){
-//        console.log("Mouse ", mouse, " camera ", camera.position);
 		camera.position.x += (mouse.x*30 - camera.position.x) * (delta*3);
 		camera.position.y += (mouse.y*30 - camera.position.y) * (delta*3);
 //		camera.lookAt( scene.position )
@@ -208,7 +125,7 @@ require([], function(){
 	//////////////////////////////////////////////////////////////////////////////////
 	onRenderFcts.push(function(){
 		renderer.render( scene, camera );		
-	})
+	});
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Rendering Loop runner						//
