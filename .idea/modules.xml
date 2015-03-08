@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ThreeJS.iml" filepath="$PROJECT_DIR$/.idea/ThreeJS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AnimThreeJS.iml"
+      filepath="$PROJECT_DIR$/.idea/AnimThreeJS.iml" />
     </modules>
   </component>
 </project>
