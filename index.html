@@ -38,40 +38,25 @@ require([], function(){
 	//		default 3 points lightning					//
 	//////////////////////////////////////////////////////////////////////////////////
 	
-	var ambientLight= new THREE.AmbientLight( 0x020202 )
+	var ambientLight= new THREE.AmbientLight( 0x202020 )
 	scene.add( ambientLight)
-	var frontLight	= new THREE.DirectionalLight('white', 1)
-	frontLight.position.set(0.5, 0.5, 2)
+	var frontLight	= new THREE.DirectionalLight(0xffffff, 1);
+	frontLight.position.set(10, 35, 0.0)
 	scene.add( frontLight )
-    scene.add ( new THREE.PointLightHelper (frontLight, 0.5));
-	var backLight	= new THREE.DirectionalLight('white', 0.75)
-	backLight.position.set(-0.5, -0.5, -2)
+    scene.add ( new THREE.DirectionalLightHelper (frontLight, 1));
+	var backLight	= new THREE.SpotLight('white', 1, 0, Math.PI / 6);
+    backLight.castShadow = true;
+	backLight.position.set(-4, 20, 10)
 	scene.add( backLight )
-    scene.add ( new THREE.PointLightHelper (backLight, 0.5));
+    scene.add ( new THREE.SpotLightHelper (backLight, 0.2));
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object and make it move					//
 	//////////////////////////////////////////////////////////////////////////////////	
-	var material	= new THREE.MeshPhongMaterial({vertexColors:THREE.VertexColors});
-//    var loader = new THREE.BufferGeometryLoader();
-//    loader.load("shapes/cube.json",
-//            function (geo) {
-//                var mesh = new THREE.Mesh (geo, material);
-//                scene.add (mesh);
-//            },
-//            function (xhr) {
-//                console.log (xhr.loaded + " bytes read");
-//            },
-//            function (xhr) {
-//                console.log ("Error ", xhr);
-//            }
-//    );
-    var c = new Cone().build(30, {r : 0.674, g : 0.7, b : 0.33});
     var wheel_cf = new THREE.Matrix4();
     wheel_cf.makeTranslation(0, -20, 0);
     var arm_cf = new THREE.Matrix4();
     arm_cf.makeRotationZ(THREE.Math.degToRad(40));
-	var mesh	= new THREE.Mesh( c, material );
     var wheel = new Wheel();
     var arm = new SwingArm(20);
 //    arm.add (new THREE.AxisHelper(2));
@@ -80,8 +65,13 @@ require([], function(){
     frame.add(arm);
     scene.add (frame);
 //    scene.add (new THREE.AxisHelper(4));
-    var grid = new THREE.GridHelper(50, 1);
-    scene.add (grid);
+    var groundPlane = new THREE.PlaneBufferGeometry(40, 40, 5, 5);
+    var groundMat = new THREE.MeshPhongMaterial({color:0x1d6438, ambient:0x1d6438});
+    var ground = new THREE.Mesh (groundPlane, groundMat);
+    ground.rotateX(THREE.Math.degToRad(-90));
+    scene.add (ground);
+//    var grid = new THREE.GridHelper(50, 1);
+//    scene.add (grid);
     camera.lookAt(new THREE.Vector3(0, 30, 0));
 //    mesh.matrixAutoUpdate = false;
 
