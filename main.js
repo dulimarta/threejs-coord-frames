@@ -9,7 +9,7 @@ require([], function(){
     var CANVAS_WIDTH = 600, CANVAS_HEIGHT = 400;
 	renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
     var gbox = document.getElementById('graphicsbox');
-    document.body.appendChild(gbox);
+    //document.body.appendChild(gbox);
 	gbox.appendChild( renderer.domElement );
 
 	// setup a scene and camera
@@ -93,8 +93,8 @@ require([], function(){
 	//////////////////////////////////////////////////////////////////////////////////
 	var mouse	= {x : 0, y : 0};
 	document.addEventListener('mousemove', function(event){
-		mouse.x	= ((event.clientX - gbox.offsetLeft) / gbox.clientWidth ) * 2 - 1;
-		mouse.y	= 1 - ((event.clientY - gbox.offsetTop) / gbox.clientHeight) * 2;
+		mouse.x	= ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1;
+		mouse.y	= 1 - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height);
 	}, false);
 
 	onRenderFcts.push(function(delta, now){

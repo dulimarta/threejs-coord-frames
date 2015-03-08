@@ -15,17 +15,21 @@
         width: 600px;
         margin: 10px;
         padding: 0px;
-        position: fixed; /* fixed or static */
+        position: static; /* fixed or static */
         top: 20px;
         left: 20px;
+        text-align: center;
     }
 </style>
 
 <p>
-This is before
+    The following WebGL animation is designed using a similar approach
+    used by its desktop OpenGL counterpart.
+
 </p>
 
 <div id="graphicsbox"></div>
 
-<p>and a text after</p>
+<p>The two animated objects
+    are controlled by their own coordinated frames (THREE.Matrix4).</p>
 </body>
