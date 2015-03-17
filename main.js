@@ -65,6 +65,11 @@ require([], function(){
     scene.add (ground);
 //    var grid = new THREE.GridHelper(50, 1);
 //    scene.add (grid);
+
+//  var myCone = new Cone(40);
+//  var coneMat = new THREE.MeshPhongMaterial({color:0x0f0650});
+//  scene.add(new THREE.Mesh(myCone, coneMat));
+
     camera.lookAt(new THREE.Vector3(0, 30, 0));
 //    mesh.matrixAutoUpdate = false;
 

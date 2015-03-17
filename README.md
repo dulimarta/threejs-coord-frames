@@ -63,3 +63,19 @@ wheel.quaternion.copy (qrot);
 wheel.scale.copy (vscale);     /* if desired */
 wheel.updateMatrix();
 ```
+
+## Using Vertex Buffers
+
+In ThreeJS, vertex buffers are managed by the BufferGeometry class.
+The code sample `shapes/cone.js` shows an example of buidling an object. 
+The `build` functions creates
+only the geometry, it is missing the material setup.
+
+To use the Cone to make a THREE.Mesh, we must supply a material. In additio
+
+```
+var coneGeo = new Cone(40);   // 40 points around the base circle
+var coneMat = new THREE.MeshPhongMaterial();  // customize with your own color
+var coneMesh = new THREE.Mesh (coneGeo, coneMat);
+scene.add(coneMesh);    /* place it on the scene */
+```
