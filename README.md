@@ -68,10 +68,9 @@ wheel.updateMatrix();
 
 In ThreeJS, vertex buffers are managed by the BufferGeometry class.
 The code sample `shapes/cone.js` shows an example of buidling an object. 
-The `build` functions creates
-only the geometry, it is missing the material setup.
+The cone constructor function creates only the geometry, it is missing the material setup.
 
-To use the Cone to make a THREE.Mesh, we must supply a material. In additio
+To use the Cone in a THREE.Mesh object, we must supply a material. 
 
 ```
 var coneGeo = new Cone(40);   // 40 points around the base circle
