@@ -9,6 +9,7 @@ require([], function(){
     var CANVAS_WIDTH = 600, CANVAS_HEIGHT = 400;
 	renderer.setSize( CANVAS_WIDTH, CANVAS_HEIGHT );
     var gbox = document.getElementById('graphicsbox');
+    var pauseAnim = false;
     //document.body.appendChild(gbox);
 	gbox.appendChild( renderer.domElement );
 
@@ -58,11 +59,40 @@ require([], function(){
     frame.add(arm);
     scene.add (frame);
 //    scene.add (new THREE.AxisHelper(4));
-    var groundPlane = new THREE.PlaneBufferGeometry(40, 40, 5, 5);
-    var groundMat = new THREE.MeshPhongMaterial({color:0x1d6438, ambient:0x1d6438});
+
+    /* Load the first texture image */
+    var stone_tex = THREE.ImageUtils.loadTexture("stone256.jpg");
+    /* for repeat to work, the image size must be 2^k */
+
+    /* repeat the texture 4 times in both direction */
+    stone_tex.repeat.set(4,4);
+    stone_tex.wrapS = THREE.RepeatWrapping;
+    stone_tex.wrapT = THREE.RepeatWrapping;
+
+    /* Load the second texture image */
+    var wood_tex = THREE.ImageUtils.loadTexture("wood256.jpg");
+
+    /* mirror repeat the texture 2 times, without
+     * mirror repeat the seam between the left
+     * and right edge of the texture will be
+     * visible */
+    wood_tex.repeat.set(2,2);
+    wood_tex.wrapS = THREE.MirroredRepeatWrapping;
+    wood_tex.wrapT = THREE.MirroredRepeatWrapping;
+    var groundPlane = new THREE.PlaneBufferGeometry(40, 40, 10, 10);
+    /* attach the texture as the "map" property of the material */
+    var groundMat = new THREE.MeshPhongMaterial({color:0x1d6438, ambient:0x1d6438, map:stone_tex});
     var ground = new THREE.Mesh (groundPlane, groundMat);
     ground.rotateX(THREE.Math.degToRad(-90));
     scene.add (ground);
+
+    var cylGeo = new THREE.CylinderGeometry(5, 6, 10, 30);
+    /* attach the texture as the "map" property of the material */
+    var cylMat = new THREE.MeshBasicMaterial ({map:wood_tex});
+    var cyl = new THREE.Mesh (cylGeo, cylMat);
+    cyl.position.x = 10;
+    cyl.position.z = 10;
+    scene.add(cyl);
 //    var grid = new THREE.GridHelper(50, 1);
 //    scene.add (grid);
 
@@ -70,10 +100,11 @@ require([], function(){
 //  var coneMat = new THREE.MeshPhongMaterial({color:0x0f0650});
 //  scene.add(new THREE.Mesh(myCone, coneMat));
 
-    camera.lookAt(new THREE.Vector3(0, 30, 0));
+    camera.lookAt(new THREE.Vector3(0, 5, 0));
 //    mesh.matrixAutoUpdate = false;
 
 	onRenderFcts.push(function(delta, now){
+        if (pauseAnim) return;
         var tran = new THREE.Vector3();
         var quat = new THREE.Quaternion();
         var rot = new THREE.Quaternion();
@@ -84,9 +115,9 @@ require([], function(){
         wheel.position.copy(tran);
         wheel.quaternion.copy(quat);
 
-        var prev_angle = 40.0 * Math.cos(now - delta);
+        /* TODO: when animation is resumed after a pause, the arm jumps */
         var curr_angle = 40.0 * Math.cos(now);
-        arm_cf.multiply(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(curr_angle - prev_angle)));
+        arm_cf.copy(new THREE.Matrix4().makeRotationZ(THREE.Math.degToRad(curr_angle)));
         arm_cf.decompose (tran, quat, vscale);
 //        rot.setFromAxisAngle( new THREE.Vector3(0,0,1), THREE.Math.degToRad(arm_angle));
         arm.position.copy(tran);
@@ -102,11 +133,18 @@ require([], function(){
 		mouse.y	= 1 - ((event.clientY - renderer.domElement.offsetTop) / renderer.domElement.height);
 	}, false);
 
-	onRenderFcts.push(function(delta, now){
-		camera.position.x += (mouse.x*30 - camera.position.x) * (delta*3);
-		camera.position.y += (mouse.y*30 - camera.position.y) * (delta*3);
-//		camera.lookAt( scene.position )
-	});
+    document.addEventListener('keypress', function(event){
+        var key = String.fromCharCode(event.keyCode || event.charCode);
+        if (key == 'p') {
+            pauseAnim ^= true; /* toggle it */
+        }
+    }, false);
+
+	//onRenderFcts.push(function(delta, now){
+	//	camera.position.x += (mouse.x*30 - camera.position.x) * (delta*3);
+	//	camera.position.y += (mouse.y*30 - camera.position.y) * (delta*3);
+	//	camera.lookAt( scene.position )
+	//});
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the scene						//
